@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
-const ML_ENGINE_URL = "http://127.0.0.1:5000";
+const ML_ENGINE_URL = process.env.ML_ENGINE_URL || "http://127.0.0.1:5000";
 
 export async function GET(request: Request) {
   try {

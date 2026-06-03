@@ -13,6 +13,10 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Agrinex | Modern Agriculture Marketplace",
   description: "High-quality seeds, fertilizers, and farming equipment at your fingertips.",
+  icons: {
+    icon: "https://res.cloudinary.com/dhpvb2emj/image/upload/q_auto/f_auto/v1778241361/logo.png",
+    apple: "https://res.cloudinary.com/dhpvb2emj/image/upload/q_auto/f_auto/v1778241361/logo.png",
+  },
 };
 
 export default function RootLayout({

@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
-const ML_ENGINE_URL = "http://127.0.0.1:5000";
+const ML_ENGINE_URL = process.env.ML_ENGINE_URL || "http://127.0.0.1:5000";
 
 const FEEDBACK_TEMPLATES = [
   {

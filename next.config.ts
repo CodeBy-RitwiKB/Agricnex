@@ -6,7 +6,9 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/ml/:path*",
-        destination: "http://127.0.0.1:5000/api/:path*",
+        destination: process.env.ML_ENGINE_URL
+          ? `${process.env.ML_ENGINE_URL}/api/:path*`
+          : "http://127.0.0.1:5000/api/:path*",
       },
     ];
   },
