@@ -141,13 +141,13 @@ export default function UserDashboard() {
             {/* Quick Actions Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                    { label: "My Orders", value: `${orders.length} Purchases`, icon: ShoppingBag, color: "text-[#1b6b3e]", link: "/user/dashboard/orders" },
-                    { label: "Wishlist", value: `${wishlistCount} Items Saved`, icon: Heart, color: "text-red-500", link: "/user/dashboard/wishlist" },
-                    { label: "Loyalty Club", value: `${loyaltyPoints} Points Active`, icon: Award, color: "text-[#ff9900]", link: "#" },
+                    { label: "My Orders", value: `${orders.length} Purchases`, icon: ShoppingBag, color: "text-[#1b6b3e]", bg: "bg-[#1b6b3e]/10", link: "/user/dashboard/orders" },
+                    { label: "Wishlist", value: `${wishlistCount} Items Saved`, icon: Heart, color: "text-red-500", bg: "bg-red-500/10", link: "/user/dashboard/wishlist" },
+                    { label: "Loyalty Club", value: `${loyaltyPoints} Points Active`, icon: Award, color: "text-[#ff9900]", bg: "bg-[#ff9900]/10", link: "#" },
                 ].map((card, i) => (
                     <Link href={card.link} key={i} className="bg-[var(--card)] border border-[var(--border)] p-8 rounded-[40px] shadow-xl shadow-black/5 hover:scale-[1.02] transition-all group block">
                         <div className="flex items-center gap-6">
-                            <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center bg-gray-100 group-hover:scale-110 transition-transform", card.color.replace('text', 'bg').replace('500', '500/10'))}>
+                            <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform", card.bg)}>
                                 <card.icon size={28} className={card.color} />
                             </div>
                             <div>
