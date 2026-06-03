@@ -9,12 +9,16 @@ export async function GET() {
     const news: { title: string; link: string; pubDate: string; description: string; image: string | null; }[] = [];
 
     $("item").slice(0, 10).each((i, el) => {
+      let imageUrl = $(el).find("enclosure").attr("url") || null;
+      if (imageUrl && imageUrl.startsWith("http://")) {
+        imageUrl = imageUrl.replace("http://", "https://");
+      }
       news.push({
         title: $(el).find("title").text(),
         link: $(el).find("link").text(),
         pubDate: $(el).find("pubDate").text(),
         description: $(el).find("description").text().replace(/<[^>]*>?/gm, ''),
-        image: $(el).find("enclosure").attr("url") || null,
+        image: imageUrl,
       });
     });
 
