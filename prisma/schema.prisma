@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model categories {
+  id          String     @id @default(uuid()) @db.Uuid
+  name        String     @unique @db.VarChar(100)
+  image_url   String?
+  description String?
+  created_at  DateTime?  @default(now()) @db.Timestamptz(6)
+  products    products[]
+}
+
+model merchants {
+  id            String           @id @default(uuid()) @db.Uuid
+  user_id       String           @unique @db.Uuid
+  store_name    String           @unique @db.VarChar(255)
+  gstin         String?          @db.VarChar(15)
+  business_type business_type?
+  status        merchant_status? @default(standard)
+  is_verified   Boolean?         @default(false)
+  bio           String?
+  created_at    DateTime?        @default(now()) @db.Timestamptz(6)
+  users         user            @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  products      products[]
+}
+
+model moderation_logs {
+  id          String    @id @default(uuid()) @db.Uuid
+  admin_id    String    @db.Uuid
+  action      String    @db.VarChar(255)
+  target_type String    @db.VarChar(50)
+  target_id   String    @db.Uuid
+  reason      String?
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  users       user     @relation(fields: [admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model order_items {
+  id                String    @id @default(uuid()) @db.Uuid
+  order_id          String    @db.Uuid
+  product_id        String?   @db.Uuid
+  quantity          Int
+  price_at_purchase Decimal   @db.Decimal(12, 2)
+  orders            orders    @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  products          products? @relation(fields: [product_id], references: [id], onUpdate: NoAction)
+}
+
+model orders {
+  id               String          @id @default(uuid()) @db.Uuid
+  user_id          String          @db.Uuid
+  total_amount     Decimal         @db.Decimal(12, 2)
+  status           order_status?   @default(pending)
+  payment_status   payment_status? @default(unpaid)
+  payment_method   String?         @db.VarChar(50)
+  transaction_id   String?         @db.VarChar(100)
+  shipping_address String
+  paid_at          DateTime?       @db.Timestamptz(6)
+  created_at       DateTime?       @default(now()) @db.Timestamptz(6)
+
+  order_items      order_items[]
+  users            user           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model products {
+  id             String          @id @default(uuid()) @db.Uuid
+  merchant_id    String          @db.Uuid
+  category_id    String?         @db.Uuid
+  name           String          @db.VarChar(255)
+  description    String?
+  price          Decimal         @db.Decimal(12, 2)
+  unit           String          @db.VarChar(50)
+  tag            String?         @db.VarChar(50)
+  image_url      String?
+  stock_quantity Int?            @default(0)
+  status         product_status? @default(pending_approval)
+  created_at     DateTime?       @default(now()) @db.Timestamptz(6)
+  updated_at     DateTime?       @default(now()) @db.Timestamptz(6)
+  order_items    order_items[]
+  categories     categories?     @relation(fields: [category_id], references: [id], onUpdate: NoAction)
+  merchants      merchants       @relation(fields: [merchant_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  reviews        reviews[]
+  wishlist       wishlist[]
+}
+
+
+model system_configs {
+  key        String    @id @db.VarChar(100)
+  value      Json
+  updated_at DateTime? @default(now()) @db.Timestamptz(6)
+}
+
+model user {
+  id              String            @id @default(uuid()) @db.Uuid
+  email           String            @unique @db.VarChar(255)
+  emailVerified   Boolean           @default(false)
+  name            String            @db.VarChar(100)
+  image           String?
+  password        String?           @db.VarChar(255) // For email/password auth
+  phoneNumber     String?           @db.VarChar(20) @map("phone_number")
+  address         String?
+  role            user_role?        @default(customer)
+  twoFactorSecret String?           @map("two_factor_secret") @db.VarChar(512)
+  failed2faAttempts Int               @default(0) @map("failed_2fa_attempts")
+  lockedUntil     DateTime?         @map("locked_until")
+  createdAt       DateTime?         @default(now()) @db.Timestamptz(6) @map("created_at")
+  updatedAt       DateTime?         @default(now()) @db.Timestamptz(6) @map("updated_at")
+  
+  sessions        session[]
+  accounts        account[]
+  
+  merchants       merchants?
+  moderation_logs moderation_logs[]
+  orders          orders[]
+  payment_methods payment_methods[]
+  reviews         reviews[]
+  wishlist        wishlist[]
+}
+
+model session {
+  id        String   @id @default(uuid()) @db.Uuid
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String   @db.Uuid
+  user      user     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model account {
+  id                    String    @id @default(uuid()) @db.Uuid
+  accountId             String
+  providerId            String
+  userId                String    @db.Uuid
+  user                  user      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model verification {
+  id         String    @id @default(uuid()) @db.Uuid
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+}
+
+model payment_methods {
+  id          String   @id @default(uuid()) @db.Uuid
+  user_id     String   @db.Uuid
+  type        String   @db.VarChar(50)
+  provider    String   @db.VarChar(50)
+  last4       String?  @db.VarChar(4)
+  is_default  Boolean  @default(false)
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  users       user    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model reviews {
+  id          String   @id @default(uuid()) @db.Uuid
+  product_id  String   @db.Uuid
+  user_id     String   @db.Uuid
+  rating      Int
+  comment     String?
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  products    products @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users       user    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model wishlist {
+  id          String   @id @default(uuid()) @db.Uuid
+  user_id     String   @db.Uuid
+  product_id  String   @db.Uuid
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  users       user     @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  products    products @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([user_id, product_id])
+}
+
+
+
+enum business_type {
+  Retailer
+  Wholesaler
+  Manufacturer
+  FPO
+  Exporter
+}
+
+enum merchant_status {
+  standard
+  premium
+}
+
+enum order_status {
+  pending
+  processing
+  shipped
+  delivered
+  cancelled
+}
+
+enum payment_status {
+  unpaid
+  paid
+  failed
+}
+
+enum product_status {
+  active
+  inactive
+  pending_approval
+}
+
+enum user_role {
+  customer
+  merchant
+  admin
+}

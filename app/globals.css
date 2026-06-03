@@ -1,0 +1,127 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-agri-green: #1b6b3e;
+  --color-agri-green-light: #538766;
+  --color-agri-bg: #f9f9f9;
+  --color-agri-orange: #ff9900;
+  --color-agri-brown: #2d2d2d;
+  --color-agri-yellow: #ff9900;
+  --color-fk-blue: #1b6b3e;
+  
+  --font-outfit: "Outfit", sans-serif;
+  
+  --animate-scroll: scroll 40s linear infinite;
+  --animate-vertical-scroll: vertical-scroll 12s linear infinite;
+  
+  @keyframes scroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes vertical-scroll {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+}
+
+:root {
+  --background: #f1f5f9;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --border: #e2e8f0;
+  --input: #f8fafc;
+  --muted: #64748b;
+  --muted-foreground: #94a3b8;
+  --primary: #1b6b3e;
+  --primary-foreground: #ffffff;
+}
+
+.dark {
+  --background: #050505;
+  --foreground: #f8fafc;
+  --card: #0a0a0a;
+  --card-foreground: #f8fafc;
+  --border: #1a1a1a;
+  --input: #0f0f0f;
+  --muted: #94a3b8;
+  --muted-foreground: #64748b;
+  --primary: #22c55e;
+  --primary-foreground: #ffffff;
+  --color-agri-bg: #050505;
+  --color-agri-brown: #f5f5f5;
+}
+
+body {
+  font-family: var(--font-outfit);
+  background: var(--background);
+  color: var(--foreground);
+  overflow-x: hidden;
+  transition: background-color 0.5s ease, color 0.5s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+*:focus {
+  outline: none !important;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide Google Translate top bar/iframe banner */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-banner-frame,
+iframe.goog-te-banner-frame,
+iframe.skiptranslate,
+#goog-te-banner-frame,
+.goog-te-banner {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+}
+html {
+    margin-top: 0px !important;
+}
+body {
+    top: 0px !important;
+}
+#google_translate_element {
+    display: none !important;
+}
+#goog-gt-tt,
+.goog-gt-tt,
+#goog-gt-tt *,
+.goog-te-balloon-frame,
+.goog-te-balloon-frame * {
+    display: none !important;
+    visibility: hidden !important;
+}
+.goog-tooltip {
+    display: none !important;
+}
+.goog-tooltip:hover {
+    display: none !important;
+}
+.goog-text-highlight {
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+
+
