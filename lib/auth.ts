@@ -6,6 +6,11 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "postgresql",
     }),
+    trustedOrigins: [
+        "https://agricnex.vercel.app",
+        "https://*.vercel.app",
+        "http://localhost:3000",
+    ],
     advanced: {
         database: {
             generateId: "uuid",
